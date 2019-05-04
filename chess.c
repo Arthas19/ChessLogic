@@ -44,6 +44,7 @@ static int chess_table[TABLE_SIZE] = { -5, -3, -4, -100, -20, -4, -3, -5,
 int main() {
 
 	print_table();
+	move_pawn(9, 1);
 
     return 0;
 }
@@ -53,7 +54,7 @@ void print_table() {
 	//system("clear");
 
 	for ( int i = 0; i < TABLE_SIZE; i++ ) {
-		if ( i % 8 == 0 ) {
+		if ( i % WIDTH == 0 ) {
 			printf("\n");
 		}
 
@@ -64,12 +65,36 @@ void print_table() {
 }
 
 void move_pawn(int pos, int turn) {
-	int available[4] = { 0, 0, 0, 0 };
+	int available[4] = { -1, -1, -1, -1 };
 
-	if ( chess_table[pos + WIDTH] == EMPTY ) {
-		available[0] = 1;
+	if ( chess_table[pos + turn*WIDTH] == EMPTY ) {
+		available[0] = pos + turn*WIDTH;
+
+		if ( chess_table[pos + turn*2*WIDTH] == EMPTY ) {
+			available[1] = pos + turn*2*WIDTH;
+		}
 	}
 
-	if ( chess_table[pos + WIDTH
+	if ( turn == 1 ) {
+		// Right
+		if ( chess_table[pos + WIDTH - 1] > 0 )
+			available[2] = pos + WIDTH - 1;
 
+		// Left
+		if ( chess_table[pos + WIDTH + 1] > 0 )
+			available[3] = pos + WIDTH + 1;
+
+	} else {
+		// Right
+		if ( chess_table[pos - WIDTH + 1] < 0 )
+			available[2] = pos - WIDTH + 1;
+		// Left
+		if ( chess_table[pos - WIDTH - 1] < 0 )
+			available[3] = pos - WIDTH - 1;
+	}
+
+	printf("%s", "Slobodna mesta: ");
+	for ( int i = 0; i < 4; i++ )
+		printf("%d ", available[i]);
+	printf("\n");
 }
