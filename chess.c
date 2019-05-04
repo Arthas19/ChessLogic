@@ -1,16 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Defined Variables */
-#define EMPTY 0
-#define WIDTH 8
-#define HEIGHT 8
+/* Defined variables */
+#define EMPTY       0
+#define BLACK       1
+#define WHITE      -1
+#define WIDTH       8
 #define TABLE_SIZE 64
 
 /* Functions used */
 
-// Printing the chess table
+// Printing chess table
 void print_table();
+// Printing fields available to play
+void print_available(int arr[], int size);
+// Moving logic for all the figures
 void move_pawn(int pos, int turn);
 void move_rook(int pos, int turn);
 void move_knight(int pos, int turn);
@@ -18,7 +22,10 @@ void move_bishop(int pos, int turn);
 void move_queen(int pos, int turn);
 void move_king(int pos, int turn);
 
-/* Custom Structures used */
+// Checking if target is eatable
+int eatable(int x, int turn);
+
+/* Custom structures used */
 
 /* Globar variables */
 // EMPTY  0    0
@@ -29,46 +36,86 @@ void move_king(int pos, int turn);
 // QUEEN  20  -20
 // KING   100 -100
 
-// Black player  1
-// White player -1
-static int player_turn = -1;
+static int player_turn = WHITE;
 static int chess_table[TABLE_SIZE] = { -5, -3, -4, -100, -20, -4, -3, -5,
                                        -1, -1, -1,   -1,  -1, -1, -1, -1,
                                         0,  0,  0,    0,   0,  0,  0,  0,
                                         0,  0,  0,    0,   0,  0,  0,  0,
                                         0,  0,  0,    0,   0,  0,  0,  0,
-                                        1,  0,  0,    0,   0,  0,  0,  0,
-                                        1,  1,  1,    1,   1,  1,  1,  1,
-                                        5,  3,  4,  100,  20,  4,  3,  5 };
+                                        -1,  1,  5,    0,   0,  0,  -1,  0,
+                                        1,  1,  -1,    1,   1,  1,  1,  1,
+                                        5,  3,  -4,  100,  20,  4,  3,  5 };
 
 int main() {
 
 	print_table();
-	move_pawn(48, -1);
+	//move_pawn(48, -1);
+    move_rook(42, -1);
 
     return 0;
 }
 
-void print_table() {
+void move_rook(int pos, int turn) {
+    int available[14] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
-	//system("clear");
+    int x;
+    int j = 0;
 
-	for ( int i = 0; i < TABLE_SIZE; i++ ) {
-		if ( i % WIDTH == 0 ) {
-			printf("\n");
-		}
+    for ( int i = 1; i <= pos / WIDTH; i++ ) {
+        x = pos - i * WIDTH;
+        if ( chess_table[x] != EMPTY) {
+            if ( eatable(x, turn) )
+                available[j++] = x;
+            break;
+        } else {
+            available[j++] = x;
+        }
+    }
 
-		printf(" %d", chess_table[i]);
-	}
+    // Down
+    for ( int i = 1; i < ( WIDTH - ( pos / WIDTH ) ); i++ ) {
+        x = pos + i * WIDTH;
+        if ( chess_table[x] != EMPTY ) {
+            if ( eatable(x, turn) )
+                available[j++] = x;
+            break;
+        } else {
+            available[j++] = x;
+        }
+    }
 
-	printf("\n\n");
+    // Right
+    for ( int i = 1; i < ( WIDTH - ( pos % WIDTH ) ); i++ )
+    {
+        x = pos + i;
+        if ( chess_table[x] != EMPTY ) {
+            if ( eatable(x, turn) )
+                available[j++] = x;
+            break;
+        } else {
+            available[j++] = x;
+        }
+    }
+    // Left
+    for ( int i = 1; i <= pos % WIDTH; i++ ) {
+        x = pos - i;
+        if ( chess_table[x] != EMPTY ) {
+            if (  eatable(x, turn) )
+                available[j++] = x;
+            break;
+        } else {
+            available[j++] = x;
+        }
+    }
+
+    print_available(available, 14);
 }
 
 void move_pawn(int pos, int turn) {
-	int available[4] = { -1, -1, -1, -1 };
+    int available[4] = { -1, -1, -1, -1 };
 
 	// Black
-	if ( turn == 1 ) {
+	if ( turn == BLACK ) {
 
 		// Move forward by 1
 		if ( pos < 56) {
@@ -77,7 +124,7 @@ void move_pawn(int pos, int turn) {
 
 				// Move forward by 2
 				if ( pos < 16)
-					if ( chess_table[pos + 2*WIDTH] == EMPTY ) 
+					if ( chess_table[pos + 2*WIDTH] == EMPTY )
 						available[1] = pos + 2*WIDTH;
 			}
 		}
@@ -101,7 +148,7 @@ void move_pawn(int pos, int turn) {
 
 				// Move forward by 2
 				if ( pos > 47)
-					if ( chess_table[pos - 2*WIDTH] == EMPTY ) 
+					if ( chess_table[pos - 2*WIDTH] == EMPTY )
 						available[1] = pos - 2*WIDTH;
 			}
 		}
@@ -116,18 +163,33 @@ void move_pawn(int pos, int turn) {
 				available[3] = pos - WIDTH - 1;
 	}
 
-	printf("%s", "Slobodna mesta: ");
-	for ( int i = 0; i < 4; i++ )
-		printf("%d ", available[i]);
-	printf("\n");
+    print_available(available, 4);
 }
 
+void print_table() {
+	//system("clear");
+	for ( int i = 0; i < TABLE_SIZE; i++ ) {
+		if ( i % WIDTH == 0 ) {
+			printf("\n");
+		}
 
-void move_forward(int pos, int turn, int n) {
-
-	if (turn == 1) {
-
-	} else {
-
+		printf(" %d", chess_table[i]);
 	}
+
+	printf("\n\n");
+}
+
+void print_available(int arr[], int size) {
+    printf("Slobodna mesta: ");
+
+    for ( int i = 0; i < size; i++ )
+        printf("%d ", arr[i]);
+
+    printf("\n");
+}
+
+int eatable(int x, int turn) {
+    if ( ( chess_table[x] < 0  && turn == WHITE ) || ( chess_table[x] > 0 && turn == BLACK ) )
+        return 1;
+    return 0;
 }
