@@ -24,6 +24,7 @@ void move_king(int pos, int turn);
 
 // Checking if target is eatable
 int eatable(int x, int turn);
+int edge_detection(int pos, int x, int y);
 
 /* Custom structures used */
 
@@ -43,23 +44,83 @@ static int chess_table[TABLE_SIZE] = { -5, -3, -4, -100, -20, -4, -3, -5,
                                         0,  0,  0,    0,   0,  0,  0,  0,
                                         0,  0,  0,    0,   0,  0,  0,  0,
                                         0,  0,  0,    0,   0,  0,  0,  0,
-                                        1,  1,  1,    1,   1,  1,  1,  1,
-                                        5,  3,  4,  100,  20,  4,  3,  5 };
+                                        1,  1,  1,    1,   1,  1,  0,  1,
+                                        5,  3,  4,  100,  20,  4,  3,  0 };
 
 int main() {
 
 	print_table();
 	//move_pawn(48, -1);
     //move_rook(42, -1);
-    move_knight(46, -1);
+    //move_knight(18, 1);
+    move_bishop(45, -1);
 
     return 0;
+}
+
+int edge_detection(int pos, int x, int y) {
+    if ( x == -1 )
+        if ( pos % WIDTH == 0 )
+            return 1;
+    if ( x == 1 )
+        if ( pos % WIDTH == 7 )
+            return 1;
+    if ( y == -1 )
+        if ( pos / WIDTH == 7 )
+            return 1;
+    if ( y == 1 )
+        if ( pos / WIDTH == 0 )
+            return 1;
+
+    return 0;
+}
+
+void move_bishop(int pos, int turn) {
+    int available[14] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+    int ed, x, j = 0;
+
+    // pos + WIDTH + 1, pos + WIDTH - 1, pos - WIDTH - 1, pos - WIDTH + 1
+    for (int i = 0; i < WIDTH; i++) {
+        x = pos - i*WIDTH - i;
+
+        ed = edge_detection(x, -1, 1);
+        if ( eatable(x, turn) ) {
+            available[j++] = x;
+            break;
+        }
+
+        if ( chess_table[x] == EMPTY ) {
+            available[j++] = x;
+            continue;
+        }
+
+        break;
+    }
+
+    for (int i = 0; i < WIDTH; i++) {
+        x = pos - i*WIDTH + i;
+
+        if ( !edge_detection(x, 1, 1) && eatable(x, turn) ) {
+            available[j++] = x;
+            break;
+        }
+
+        if ( !edge_detection(x, 1, 1) && chess_table[x] == EMPTY ) {
+            available[j++] = x;
+            continue;
+        }
+
+        break;
+    }
+
+    print_available(available, 14);
 }
 
 void move_knight(int pos, int turn) {
     int available[8] = { -1, -1, -1, -1, -1, -1, -1, -1 };
 
-    int x, j = 0;
+    int j = 0;
 
     switch (pos) {
         case 0:
@@ -276,6 +337,14 @@ void move_knight(int pos, int turn) {
         case 3:
         case 4:
         case 5:
+            if ( eatable(pos + 2*WIDTH - 1, turn) || chess_table[pos + 2*WIDTH - 1] == EMPTY )
+                available[j++] = pos + 2*WIDTH - 1;
+            if ( eatable(pos + 2*WIDTH + 1, turn) || chess_table[pos + 2*WIDTH + 1] == EMPTY )
+                available[j++] = pos + 2*WIDTH + 1;
+            if ( eatable(pos + WIDTH - 2, turn) || chess_table[pos + WIDTH - 2] == EMPTY )
+                available[j++] = pos + WIDTH - 2;
+            if ( eatable(pos + WIDTH + 2, turn) || chess_table[pos + WIDTH + 2] == EMPTY )
+                available[j++] = pos + WIDTH + 2;
             break;
 
         // Upper =
@@ -283,6 +352,18 @@ void move_knight(int pos, int turn) {
         case 11:
         case 12:
         case 13:
+            if ( eatable(pos - WIDTH - 2, turn) || chess_table[pos - WIDTH - 2] == EMPTY )
+                available[j++] = pos - WIDTH - 2;
+            if ( eatable(pos - WIDTH + 2, turn) || chess_table[pos - WIDTH + 2] == EMPTY )
+                available[j++] = pos - WIDTH + 2;
+            if ( eatable(pos + 2*WIDTH - 1, turn) || chess_table[pos + 2*WIDTH - 1] == EMPTY )
+                available[j++] = pos + 2*WIDTH - 1;
+            if ( eatable(pos + 2*WIDTH + 1, turn) || chess_table[pos + 2*WIDTH + 1] == EMPTY )
+                available[j++] = pos + 2*WIDTH + 1;
+            if ( eatable(pos + WIDTH - 2, turn) || chess_table[pos + WIDTH - 2] == EMPTY )
+                available[j++] = pos + WIDTH - 2;
+            if ( eatable(pos + WIDTH + 2, turn) || chess_table[pos + WIDTH + 2] == EMPTY )
+                available[j++] = pos + WIDTH + 2;
             break;
 
         // lower =
@@ -290,6 +371,18 @@ void move_knight(int pos, int turn) {
         case 51:
         case 52:
         case 53:
+            if ( eatable(pos - WIDTH - 2, turn) || chess_table[pos - WIDTH - 2] == EMPTY )
+                available[j++] = pos - WIDTH - 2;
+            if ( eatable(pos - WIDTH + 2, turn) || chess_table[pos - WIDTH + 2] == EMPTY )
+                available[j++] = pos - WIDTH + 2;
+            if ( eatable(pos - 2*WIDTH - 1, turn) || chess_table[pos - 2*WIDTH - 1] == EMPTY )
+                available[j++] = pos - 2*WIDTH - 1;
+            if ( eatable(pos - 2*WIDTH + 1, turn) || chess_table[pos - 2*WIDTH + 1] == EMPTY )
+                available[j++] = pos - 2*WIDTH + 1;
+            if ( eatable(pos + WIDTH - 2, turn) || chess_table[pos + WIDTH - 2] == EMPTY )
+                available[j++] = pos + WIDTH - 2;
+            if ( eatable(pos + WIDTH + 2, turn) || chess_table[pos + WIDTH + 2] == EMPTY )
+                available[j++] = pos + WIDTH + 2;
             break;
 
         // lower -
@@ -297,13 +390,35 @@ void move_knight(int pos, int turn) {
         case 59:
         case 60:
         case 61:
+            if ( eatable(pos - 2*WIDTH - 1, turn) || chess_table[pos - 2*WIDTH - 1] == EMPTY )
+                available[j++] = pos - 2*WIDTH - 1;
+            if ( eatable(pos - 2*WIDTH + 1, turn) || chess_table[pos - 2*WIDTH + 1] == EMPTY )
+                available[j++] = pos - 2*WIDTH + 1;
+            if ( eatable(pos - WIDTH - 2, turn) || chess_table[pos - WIDTH - 2] == EMPTY )
+                available[j++] = pos - WIDTH - 2;
+            if ( eatable(pos - WIDTH + 2, turn) || chess_table[pos - WIDTH + 2] == EMPTY )
+                available[j++] = pos - WIDTH + 2;
             break;
 
         // middle square, 4x4
         default:
+            if ( eatable(pos - 2*WIDTH - 1, turn ) || chess_table[pos - 2*WIDTH - 1] == EMPTY )
+                available[j++] = pos - 2*WIDTH - 1;
+            if ( eatable(pos - 2*WIDTH + 1, turn ) || chess_table[pos - 2*WIDTH - 1] == EMPTY )
+                available[j++] = pos - 2*WIDTH + 1;
+            if ( eatable(pos - WIDTH - 2, turn ) || chess_table[pos - WIDTH - 2] == EMPTY )
+                available[j++] = pos - WIDTH - 2;
+            if ( eatable(pos - WIDTH + 2, turn ) || chess_table[pos - WIDTH - 2] == EMPTY )
+                available[j++] = pos - WIDTH + 2;
+            if ( eatable(pos + WIDTH - 2, turn ) || chess_table[pos + WIDTH - 2] == EMPTY )
+                available[j++] = pos + WIDTH - 2;
+            if ( eatable(pos + WIDTH + 2, turn ) || chess_table[pos + WIDTH - 2] == EMPTY )
+                available[j++] = pos + WIDTH + 2;
+            if ( eatable(pos + 2*WIDTH - 1, turn ) || chess_table[pos + 2*WIDTH - 1] == EMPTY )
+                available[j++] = pos + 2*WIDTH - 1;
+            if ( eatable(pos + 2*WIDTH + 1, turn ) || chess_table[pos + 2*WIDTH + 1] == EMPTY )
+                available[j++] = pos + 2*WIDTH + 1;
             break;
-    //pos -+ 2*WIDTH -+ 1
-    //pos -+   WIDTH -+ 2
     }
 
     print_available(available, 8);
