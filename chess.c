@@ -206,7 +206,6 @@ void move_knight(int pos, int turn) {
             if ( eatable(52, turn) || chess_table[52] == EMPTY )
                 available[j++] = 52;
             break;
-
         // >|
         case 16:
         case 24:
@@ -257,7 +256,6 @@ void move_knight(int pos, int turn) {
             if ( eatable(pos + WIDTH + 2, turn) || chess_table[pos + WIDTH + 2] == EMPTY )
                 available[j++] = pos + WIDTH + 2;
             break;
-
         // ||<
         case 23:
         case 31:
@@ -271,7 +269,6 @@ void move_knight(int pos, int turn) {
                 available[j++] = pos - WIDTH + 2;
             if ( eatable(pos + WIDTH + 2, turn) || chess_table[pos + WIDTH + 2] == EMPTY )
                 available[j++] = pos + WIDTH + 2;
-            break;
             break;
 
         // Upper -
