@@ -92,6 +92,8 @@ void move_bishop(int pos, int turn) {
 
         if ( chess_table[x] == EMPTY ) {
             available[j++] = x;
+            if ( edge_detection(x, -1, 1) )
+                break;
             continue;
         }
 
