@@ -35,6 +35,7 @@ or we can detect specific side (-1,  0) left,
                                ( 0,  1) upper.
 */
 int edge_detection(int pos, int x, int y);
+int cursor(int turn);
 
 /* Custom structures used */
 
@@ -47,41 +48,21 @@ int edge_detection(int pos, int x, int y);
 // QUEEN  20  -20
 // KING   100 -100
 
-static int player_turn = WHITE;
+static int game = 0;            // win or lose
+static int king_flag = 0;       // warning when the king is attacked, too hard !!!
+static int player_turn = WHITE; // who's turn?
 static int chess_table[TABLE_SIZE] = { -5, -3, -4, -100, -20, -4, -3, -5,
                                        -1, -1, -1,   -1,  -1, -1, -1, -1,
                                         0,  0,  0,    0,   0,  0,  0,  0,
-                                        0,  0,  0,    1,   0,  0,  0,  0,
-                                        0,  0,  1,    0,   1,  0,  0,  0,
-                                        0,  0,  0,    1,   0,  0,  0,  0,
+                                        0,  0,  0,    0,   0,  0,  0,  0,
+                                        0,  0,  0,    0,   0,  0,  0,  0,
+                                        0,  0,  0,    0,   0,  0,  0,  0,
                                         1,  1,  1,    1,   1,  1,  1,  1,
                                         5,  3,  4,  100,  20,  4,  3,  5 };
 
 int main() {
 
-	print_table();
-
-    /*
-        Testiranje,
-        sve move_* funkcije se pozivaju tako sto im  prosledite index polja
-        i ciji je potez. Gore imate niz koji rucno mozete menjati tako sto
-        ce te npr. umesto crnog topa (-5) na 0 indexu staviti belog konja (3).
-
-        Potezi su neintuitivno invertovani BELI -1 (crne figure < 0)
-                                           CRNI  1 (bele figure > 0)
-
-        primeri poziva:
-            move_pawn(48, -1);
-            move_rook(42, -1);
-            move_knight(18, 1);
-            move_bishop(45, 1);
-            move_queen(45, 1);
-
-        Probajte naci gresku.
-    */
-
-    move_king(35, -1);
-
+    printf("%s\n", "Hello world!");
     return 0;
 }
 
@@ -198,6 +179,7 @@ void move_queen(int pos, int turn) {
         }
     }
 
+    // Diagonal, upper left
     if ( !edge_detection(pos, -1, 1) ) {
         for (int i = 1; i < WIDTH; i++) {
             x = pos - i*WIDTH - i;
@@ -218,6 +200,7 @@ void move_queen(int pos, int turn) {
         }
     }
 
+    // Diagonal, upper right
     if ( !edge_detection(pos, 1, 1) ) {
         for (int i = 1; i < WIDTH; i++) {
             x = pos - i*WIDTH + i;
@@ -238,6 +221,7 @@ void move_queen(int pos, int turn) {
         }
     }
 
+    // Diagonal, bottom left
     if ( !edge_detection(pos, -1, -1) ) {
         for (int i = 1; i < WIDTH; i++) {
             x = pos + i*WIDTH - i;
@@ -258,6 +242,7 @@ void move_queen(int pos, int turn) {
         }
     }
 
+    // Diagonal, bottom right
     if ( !edge_detection(pos, 1, -1) ) {
         for (int i = 1; i < WIDTH; i++) {
             x = pos + i*WIDTH + i;
@@ -286,7 +271,7 @@ void move_bishop(int pos, int turn) {
 
     int x, j = 0;
 
-    // pos + WIDTH + 1, pos + WIDTH - 1, pos - WIDTH - 1, pos - WIDTH + 1
+    // Diagonal, upper left
     if ( !edge_detection(pos, -1, 1) ) {
         for (int i = 1; i < WIDTH; i++) {
             x = pos - i*WIDTH - i;
@@ -307,6 +292,7 @@ void move_bishop(int pos, int turn) {
         }
     }
 
+    // Diagonal, upper right
     if ( !edge_detection(pos, 1, 1) ) {
         for (int i = 1; i < WIDTH; i++) {
             x = pos - i*WIDTH + i;
@@ -327,6 +313,7 @@ void move_bishop(int pos, int turn) {
         }
     }
 
+    // Diagonal, bottom left
     if ( !edge_detection(pos, -1, -1) ) {
         for (int i = 1; i < WIDTH; i++) {
             x = pos + i*WIDTH - i;
@@ -347,6 +334,7 @@ void move_bishop(int pos, int turn) {
         }
     }
 
+    // Diagonal, bottom right
     if ( !edge_detection(pos, 1, -1) ) {
         for (int i = 1; i < WIDTH; i++) {
             x = pos + i*WIDTH + i;
@@ -370,10 +358,11 @@ void move_bishop(int pos, int turn) {
     print_available(available, 14);
 }
 
+/* motherfucker */
 void move_knight(int pos, int turn) {
     int available[8] = { -1, -1, -1, -1, -1, -1, -1, -1 };
 
-    int j = 0;
+    int x, j = 0;
 
     switch (pos) {
         case 0:
@@ -737,54 +726,34 @@ void move_rook(int pos, int turn) {
 void move_pawn(int pos, int turn) {
     int available[4] = { -1, -1, -1, -1 };
 
-	// Black
-	if ( turn == BLACK ) {
+    int j = 0;
 
-		// Move forward by 1
-		if ( pos < 56) {
-			if ( chess_table[pos + WIDTH] == EMPTY ) {
-				available[0] = pos + WIDTH;
+    if ( turn == BLACK ) {
+        if ( !edge_detection(pos, 0, -1) ) {
+            if ( chess_table[pos + WIDTH] == EMPTY ) {
+                available[j++] = pos + WIDTH;
 
-				// Move forward by 2
-				if ( pos < 16)
-					if ( chess_table[pos + 2*WIDTH] == EMPTY )
-						available[1] = pos + 2*WIDTH;
-			}
-		}
+                if ( chess_table[pos + 2*WIDTH] == EMPTY && pos / WIDTH == 1 )
+                    available[j++] = pos + 2*WIDTH;
+            }
+        }
+    } else {
+        if ( !edge_detection(pos, 0, 1) ) {
+            if ( chess_table[pos - WIDTH] == EMPTY ) {
+                available[j++] = pos - WIDTH;
 
-		// Eat Right
-		if (pos % WIDTH != 0)
-			if ( chess_table[pos + WIDTH - 1] > 0 )
-				available[2] = pos + WIDTH - 1;
+                if ( chess_table[pos - 2*WIDTH] == EMPTY && pos / WIDTH == 7 )
+                    available[j++] = pos - 2*WIDTH;
+            }
+        }
+    }
 
-		// Eat Left
-		if (pos % WIDTH != 7)
-			if ( chess_table[pos + WIDTH + 1] > 0 )
-				available[3] = pos + WIDTH + 1;
-	// White
-	} else {
-
-		// Move forward by 1
-		if ( pos > 7) {
-			if ( chess_table[pos - WIDTH] == EMPTY ) {
-				available[0] = pos - WIDTH;
-
-				// Move forward by 2
-				if ( pos > 47)
-					if ( chess_table[pos - 2*WIDTH] == EMPTY )
-						available[1] = pos - 2*WIDTH;
-			}
-		}
-		// Eat Right
-		if (pos % WIDTH != 7)
-			if ( chess_table[pos - WIDTH + 1] < 0 )
-				available[2] = pos - WIDTH + 1;
-
-		// Eat Left
-		if (pos % WIDTH != 0)
-			if ( chess_table[pos - WIDTH - 1] < 0 )
-				available[3] = pos - WIDTH - 1;
-	}
+    if ( !edge_detection(pos, -1, 0) )
+        if ( eatable(pos + turn*WIDTH - 1, turn) )
+            available[j++] = pos + turn*WIDTH - 1;
+    if ( !edge_detection(pos,  1, 0) )
+        if ( eatable(pos + turn*WIDTH + 1, turn) )
+            available[j++] = pos + turn*WIDTH + 1;
 
     print_available(available, 4);
 }
