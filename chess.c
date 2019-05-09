@@ -24,6 +24,16 @@ void move_king(int pos, int turn);
 
 // Checking if target is eatable
 int eatable(int x, int turn);
+/*
+ Detecting specific corner with [X, Y] cordinate (-1, -1) bottom left,
+                                                 (-1,  1) upper left,
+                                                 ( 1, -1) bottom right,
+                                                 ( 1,  1) upper right,
+or we can detect specific side (-1,  0) left,
+                               ( 1,  0) right
+                               ( 0, -1) bottom,
+                               ( 0,  1) upper.
+*/
 int edge_detection(int pos, int x, int y);
 
 /* Custom structures used */
@@ -53,7 +63,7 @@ int main() {
 	//move_pawn(48, -1);
     //move_rook(42, -1);
     //move_knight(18, 1);
-    move_bishop(45, -1);
+    move_bishop(45, 1);
 
     return 0;
 }
@@ -78,42 +88,87 @@ int edge_detection(int pos, int x, int y) {
 void move_bishop(int pos, int turn) {
     int available[14] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
-    int ed, x, j = 0;
+    int x, j = 0;
 
     // pos + WIDTH + 1, pos + WIDTH - 1, pos - WIDTH - 1, pos - WIDTH + 1
-    for (int i = 0; i < WIDTH; i++) {
-        x = pos - i*WIDTH - i;
+    if ( !edge_detection(pos, -1, 1) ) {
+        for (int i = 1; i < WIDTH; i++) {
+            x = pos - i*WIDTH - i;
 
-        ed = edge_detection(x, -1, 1);
-        if ( eatable(x, turn) ) {
-            available[j++] = x;
+            if ( eatable(x, turn) ) {
+                available[j++] = x;
+                break;
+            }
+
+            if ( chess_table[x] == EMPTY ) {
+                available[j++] = x;
+                if ( edge_detection(x, -1, 1) )
+                    break;
+                    continue;
+                }
+
+                break;
+            }
+        }
+
+    if ( !edge_detection(pos, 1, 1) ) {
+        for (int i = 1; i < WIDTH; i++) {
+            x = pos - i*WIDTH + i;
+
+            if ( eatable(x, turn) ) {
+                available[j++] = x;
+                break;
+            }
+
+            if ( chess_table[x] == EMPTY ) {
+                available[j++] = x;
+                if ( edge_detection(x, 1, 1) )
+                    break;
+                continue;
+            }
+
             break;
         }
-
-        if ( chess_table[x] == EMPTY ) {
-            available[j++] = x;
-            if ( edge_detection(x, -1, 1) )
-                break;
-            continue;
-        }
-
-        break;
     }
 
-    for (int i = 0; i < WIDTH; i++) {
-        x = pos - i*WIDTH + i;
+    if ( !edge_detection(pos, -1, -1) ) {
+        for (int i = 1; i < WIDTH; i++) {
+            x = pos + i*WIDTH - i;
 
-        if ( !edge_detection(x, 1, 1) && eatable(x, turn) ) {
-            available[j++] = x;
+            if ( eatable(x, turn) ) {
+                available[j++] = x;
+                break;
+            }
+
+            if ( chess_table[x] == EMPTY ) {
+                available[j++] = x;
+                if ( edge_detection(x, -1, -1) )
+                    break;
+                continue;
+            }
+
             break;
         }
+    }
 
-        if ( !edge_detection(x, 1, 1) && chess_table[x] == EMPTY ) {
-            available[j++] = x;
-            continue;
+    if ( !edge_detection(pos, 1, -1) ) {
+        for (int i = 1; i < WIDTH; i++) {
+            x = pos + i*WIDTH + i;
+
+            if ( eatable(x, turn) ) {
+                available[j++] = x;
+                break;
+            }
+
+            if ( chess_table[x] == EMPTY ) {
+                available[j++] = x;
+                if ( edge_detection(x, 1, -1) )
+                    break;
+                continue;
+            }
+
+            break;
         }
-
-        break;
     }
 
     print_available(available, 14);
