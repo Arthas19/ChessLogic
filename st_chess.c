@@ -59,7 +59,7 @@ void setup_board(SQUARE board[][WIDTH], PIECE black[], PIECE white[]) {
         for (int j = 0; j < WIDTH; j++) {
             board[i][j].point.x = i;
             board[i][j].point.y = j;
-            board[i][j].point = NULL;
+            board[i][j].piece = NULL;
 
             if (i = 0)
                 board[i][j].piece = (PIECE*)(black + j);
