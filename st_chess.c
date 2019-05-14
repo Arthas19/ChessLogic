@@ -43,37 +43,37 @@ int main() {
     PIECE white[WIDTH<<1] = {};
     SQUARE board[WIDTH][WIDTH] = {};
 
+    //TO DO: setup_players(black, white);
     setup_board(board, black, white);
     //TO DO: print_board(board, black, white);
 
     return 0;
 }
 
-void setup_players(PIECE black[], PIECE white[]) {
-        black[0].point.x = 0;
-        black[0].point.y = 0;
-}
-
 void setup_board(SQUARE board[][WIDTH], PIECE black[], PIECE white[]) {
-    for (int i = 0; i < WIDTH; i++) {
-        for (int j = 0; j < WIDTH; j++) {
-            board[i][j].point.x = i;
-            board[i][j].point.y = j;
-            board[i][j].piece = NULL;
+    for (int y = 0; y < WIDTH; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            board[y][x].point.x = x;
+            board[y][x].point.y = y;
+            board[y][x].piece = NULL;
 
-            if (i = 0)
-                board[i][j].piece = (PIECE*)(black + j);
-            if (i = 1)
-                board[i][j].piece = (PIECE*)(black + WIDTH+j);
-            if (i = 6)
-                board[i][j].piece = (PIECE*)(white+WIDTH+j);
-            if (i = 7)
-                board[i][j].piece = (PIECE*)(white + j);
+            if (y = 0)
+                board[y][x].piece = (PIECE*)(black + x);
+            if (y = 1)
+                board[y][x].piece = (PIECE*)(black + WIDTH + x);
+            if (y = 6)
+                board[y][x].piece = (PIECE*)(white + WIDTH + x);
+            if (y = 7)
+                board[y][x].piece = (PIECE*)(white + x);
 
-            if ((i+j) % 2)
-                board[i][j].color = BLACK;
+            if ((x+y) % 2)
+                board[y][x].color = BLACK;
             else
-                board[i][j].color = WHITE;
+                board[y][x].color = WHITE;
         }
     }
+}
+
+void setup_players(PIECE black[], PIECE white[]) {
+    
 }
