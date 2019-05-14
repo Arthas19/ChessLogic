@@ -61,13 +61,13 @@ void setup_board(SQUARE board[][WIDTH], PIECE black[], PIECE white[]) {
             board[y][x].point.y = y;
             board[y][x].piece = NULL;
 
-            if (y = 0)
+            if (y == 0)
                 board[y][x].piece = (PIECE*)(black + x);
-            if (y = 1)
+            if (y == 1)
                 board[y][x].piece = (PIECE*)(black + WIDTH + x);
-            if (y = 6)
+            if (y == 6)
                 board[y][x].piece = (PIECE*)(white + WIDTH + x);
-            if (y = 7)
+            if (y == 7)
                 board[y][x].piece = (PIECE*)(white + x);
 
             if (((x+y) % 2) == 0)
@@ -140,15 +140,15 @@ void setup_players(PIECE black[], PIECE white[]) {
 
     // BISHOP's Black & White
 
-    black[3].point.x = 2;
-    black[3].point.y = 0;
-    black[3].piece = BISHOP;
-    black[3].color = BLACK;
+    black[2].point.x = 2;
+    black[2].point.y = 0;
+    black[2].piece = BISHOP;
+    black[2].color = BLACK;
 
-    white[3].point.x = 2;
-    white[3].point.y = 7;
-    white[3].piece = BISHOP;
-    white[3].color = WHITE;
+    white[2].point.x = 2;
+    white[2].point.y = 7;
+    white[2].piece = BISHOP;
+    white[2].color = WHITE;
 
     black[5].point.x = 5;
     black[5].point.y = 0;
