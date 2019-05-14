@@ -1,0 +1,48 @@
+	// Black
+	if ( turn == BLACK ) {
+
+		// Move forward by 1
+		if ( pos < 56) {
+			if ( chess_table[pos + WIDTH] == EMPTY ) {
+				available[0] = pos + WIDTH;
+
+				// Move forward by 2
+				if ( pos < 16)
+					if ( chess_table[pos + 2*WIDTH] == EMPTY )
+						available[1] = pos + 2*WIDTH;
+			}
+		}
+
+		// Eat Right
+		if (pos % WIDTH != 0)
+			if ( chess_table[pos + WIDTH - 1] > 0 )
+				available[2] = pos + WIDTH - 1;
+
+		// Eat Left
+		if (pos % WIDTH != 7)
+			if ( chess_table[pos + WIDTH + 1] > 0 )
+				available[3] = pos + WIDTH + 1;
+	// White
+	} else {
+
+		// Move forward by 1
+		if ( pos > 7) {
+			if ( chess_table[pos - WIDTH] == EMPTY ) {
+				available[0] = pos - WIDTH;
+
+				// Move forward by 2
+				if ( pos > 47)
+					if ( chess_table[pos - 2*WIDTH] == EMPTY )
+						available[1] = pos - 2*WIDTH;
+			}
+		}
+		// Eat Right
+		if (pos % WIDTH != 7)
+			if ( chess_table[pos - WIDTH + 1] < 0 )
+				available[2] = pos - WIDTH + 1;
+
+		// Eat Left
+		if (pos % WIDTH != 0)
+			if ( chess_table[pos - WIDTH - 1] < 0 )
+				available[3] = pos - WIDTH - 1;
+	}
