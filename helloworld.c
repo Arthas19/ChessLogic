@@ -100,6 +100,8 @@ void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) 
 	}
 }
 
+
+// Ovde cisti pozicije u svojoj mapi, nema veze sa ekranom niti nam je potrebno!
 //when the blank field is pressed, open all blank fields around it
 
 void clean(int x, int y, char resultTable[SIZE][SIZE],
@@ -136,7 +138,7 @@ void openField(int x, int y, char map[9][9]) {
 	case NUM1:
 		/*
 			X, Y - lokacija sprite-a
-			izgleda x-1, y-1 vraca se ili u gornji levi ugao ili u
+			izgleda x-1, y-1 vraca se ili u gornji levi ugao (ili forica sa 81)
 			16x16 P sprite-a
 		*/
 
@@ -293,7 +295,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 //function that controls switches and buttons
 
 void move() {
-	int startX = 97, startY = 81, endX = 112, endY = 96;
+	int startX = 81, startY = 81, endX = 96, endY = 96;
 	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int x, y, ic, ib, i, j;
 	int prethodnoStanje;
@@ -580,15 +582,6 @@ int main() {
 			drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
 		}
 	}
-
-	//smiley
-	//drawMap(0, 55, 120, 54, 27, 26);
-
-	//flag
-	//drawMap(65, 17, 154, 60, 13, 13);
-
-	//counter
-	//drawMap(116, 32, 168, 54, 14, 23);
 
 	//moving through the table
 	move();
