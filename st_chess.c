@@ -5,7 +5,7 @@
 #define WHITE  1
 #define WIDTH  8
 
-enum Piece { EMPTY = 0, PAWN = 10, ROOK = 50, KNIGHT = 30, BISHOP = 40, QUEEN = 200, KING = 1000 };
+enum Piece { DEAD = -1, EMPTY = 0, PAWN = 10, ROOK = 50, KNIGHT = 30, BISHOP = 40, QUEEN = 200, KING = 1000 };
 
 /* Custom structures used in game */
 
@@ -30,12 +30,14 @@ typedef struct square_st {
 
 static int player_turn = WHITE;
 
-
 /* Functions used in game */
 
 void setup_board(SQUARE board[][WIDTH], PIECE black[], PIECE white[]);
 void setup_players(PIECE black[], PIECE white[]);
 void print_board(SQUARE board[][WIDTH]);
+void draw_board(SQUARE board[][WIDTH]);
+void draw_square(POINT out, int color);
+void draw_piece(POINT in, POINT out);
 
 /*-----------------------------------MAIN--------------------------------------*/
 
@@ -47,7 +49,8 @@ int main() {
 
     setup_players(black, white);
     setup_board(board, black, white);
-    print_board(board);
+    //print_board(board);
+    draw_board(board);
 
     return 0;
 }
@@ -196,6 +199,206 @@ void print_board(SQUARE board[][WIDTH]) {
 
             if (x == 7)
                 printf("\n");
+        }
+    }
+}
+
+void draw_board(SQUARE board[][WIDTH]) {
+
+    POINT in, out;
+
+    out.x = out.y = 0;
+
+    for (int y = 0; y < WIDTH; y++, out.y++) {
+        for (int x = 0; x < WIDTH; x++, out.x++) {
+            if (board[y][x].piece != NULL)  {
+
+                switch (board[y][x].piece->piece) {
+                    case PAWN:
+
+                        in.x = 0;
+
+                        if      ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                            in.y = 0;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == WHITE && board[y][x].piece->color == BLACK ) {
+                            in.y = 30;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == WHITE ) {
+                            in.y = 60;
+                            draw_piece(in, out);
+                        }
+                        else {
+                            in.y = 90;
+                            draw_piece(in, out);
+                        }
+                        break;
+                    case ROOK:
+
+                        in.x = 30;
+
+                        if      ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                            in.y = 0;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == WHITE && board[y][x].piece->color == BLACK ) {
+                            in.y = 30;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                            in.y = 60;
+                            draw_piece(in, out);
+                        }
+                        else {
+                            in.y = 90;
+                            draw_piece(in, out);
+                        }
+                        break;
+                    case KNIGHT:
+
+                        in.x = 60;
+
+                        if      ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                            in.y = 0;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == WHITE && board[y][x].piece->color == BLACK ) {
+                            in.y = 30;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                            in.y = 60;
+                            draw_piece(in, out);
+                        }
+                        else {
+                            in.y = 90;
+                            draw_piece(in, out);
+                        }
+                        break;
+                    case BISHOP:
+
+                        in.x = 90;
+
+                        if ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                            in.y = 0;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == WHITE && board[y][x].piece->color == BLACK ) {
+                            in.y = 30;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                            in.y = 60;
+                            draw_piece(in, out);
+                        }
+                        else {
+                            in.y = 90;
+                            draw_piece(in, out);
+                        }
+                        break;
+                    case QUEEN:
+
+                        in.x = 120;
+
+                        if ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                            in.y = 0;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == WHITE && board[y][x].piece->color == BLACK ) {
+                            in.y = 30;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                            in.y = 60;
+                            draw_piece(in, out);
+                        }
+                        else {
+                            in.y = 90;
+                            draw_piece(in, out);
+                        }
+                        break;
+                    case KING:
+
+                        in.x = 150;
+
+                        if ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                            in.y = 0;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == WHITE && board[y][x].piece->color == BLACK ) {
+                            in.y = 30;
+                            draw_piece(in, out);
+                        }
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                            in.y = 60;
+                            draw_piece(in, out);
+                        }
+                        else {
+                            in.y = 90;
+                            draw_piece(in, out);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                if (board[y][x].color == WHITE)
+                    draw_square(out, WHITE);
+                else
+                    draw_square(out, BLACK);
+            }
+        }
+    }
+}
+
+void draw_piece(POINT in, POINT out) {
+    int RGB, R, G, B;
+    size_t size = 30;
+    int iy, ix, ii, ox, oy, oi;
+	for (int y = 0; y < size; y++) {
+		for (int x = 0; x < size; x++) {
+			ox = ( 40 + out.x * size ) + x; // konverzija mozda sam zajebao
+			oy = ( out.y * 30 ) + y;
+			oi = oy * 320 + ox;
+
+			ix = in.x + x;
+			iy = in.y + y;
+			ii = iy * bitmap.width + ix;
+
+            // RGB 5 6 5
+			R = ( bitmap.pixel_data[ii * bitmap.bytes_per_pixel]         ) >> 13;
+			G = ( bitmap.pixel_data[ii * bitmap.bytes_per_pixel] & 0x700 ) >> 8;
+			B = ( bitmap.pixel_data[ii * bitmap.bytes_per_pixel] & 0x1C  ) >> 2;
+
+			R <<= 6;
+			G <<= 3;
+			RGB = R | G | B;
+
+			VGA_PERIPH_MEM_mWriteMemory(
+					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
+							+ oi * 4, RGB);
+        }
+    }
+}
+
+void draw_square(POINT out, int color) {
+    int RGB; // beton verzija "crna" ili "bela"
+    size_t size = 30;
+
+    RGB = (color == BLACK ? 0xA3 : 0x1F5);
+
+    int ox, oy, oi;
+	for (int y = 0; y < size; y++) {
+		for (int x = 0; x < size; x++) {
+			ox = ( 40 + out.x * size ) + x;
+			oy = ( out.y * size ) + y;
+			oi = oy * 320 + ox;
+
+			VGA_PERIPH_MEM_mWriteMemory(
+					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
+							+ oi * 4, RGB);
         }
     }
 }

@@ -1,10 +1,10 @@
 /* GIMP RGB C-Source image dump (bitmap.c) */
 
 static const struct {
-  unsigned int 	 width;
+  unsigned int   width;
   unsigned int 	 height;
   unsigned int 	 bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */ 
-  unsigned char	 pixel_data[180 * 120 * 2 + 1];
+  unsigned short pixel_data[180 * 120 * 2 + 1];
 } bitmap = {
   180, 120, 2,
   "\265\212c\265\212c\265\212c\265\212c\265\212c\265\212c\265\212c\265\212c"
@@ -1836,4 +1836,3 @@ static const struct {
   "L\264L\264L\264L\264L\264L\264L\264L\264L\264L\264L\264L\264L\264L\264L\264"
   "L\264L\264L\264L\264L\264L\264L\264L\264L\264L\264L\264",
 };
-
