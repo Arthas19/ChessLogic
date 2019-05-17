@@ -7,7 +7,7 @@
 #include "xio.h"
 #include "xil_exception.h"
 #include "vga_periph_mem.h"
-// #include "minesweeper_sprites.h" pitaj losmija kkao bitmap.c da ubacim
+// #include "minesweeper_sprites.h"       pitaj losmija kkao bitmap.c da ubacim
 
 
 #define UP     0b01000000
@@ -103,7 +103,7 @@ int main() {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x3971ed);
+							+ i * 4, 0x5F);
 		}
 	}
 
@@ -301,7 +301,7 @@ void draw_board(SQUARE board[][WIDTH]) {
                             in.y = 30;
                             draw_piece(in, out);
                         }
-                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == WHITE ) {
                             in.y = 60;
                             draw_piece(in, out);
                         }
@@ -323,7 +323,7 @@ void draw_board(SQUARE board[][WIDTH]) {
                             in.y = 30;
                             draw_piece(in, out);
                         }
-                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == WHITE ) {
                             in.y = 60;
                             draw_piece(in, out);
                         }
@@ -345,7 +345,7 @@ void draw_board(SQUARE board[][WIDTH]) {
                             in.y = 30;
                             draw_piece(in, out);
                         }
-                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == WHITE ) {
                             in.y = 60;
                             draw_piece(in, out);
                         }
@@ -367,7 +367,7 @@ void draw_board(SQUARE board[][WIDTH]) {
                             in.y = 30;
                             draw_piece(in, out);
                         }
-                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == WHITE ) {
                             in.y = 60;
                             draw_piece(in, out);
                         }
@@ -389,7 +389,7 @@ void draw_board(SQUARE board[][WIDTH]) {
                             in.y = 30;
                             draw_piece(in, out);
                         }
-                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == BLACK ) {
+                        else if ( board[y][x].color == BLACK && board[y][x].piece->color == WHITE ) {
                             in.y = 60;
                             draw_piece(in, out);
                         }
@@ -419,7 +419,7 @@ void draw_piece(POINT in, POINT out) {
 	for (int y = 0; y < size; y++) {
 		for (int x = 0; x < size; x++) {
 			ox = ( 40 + out.x * size ) + x; // konverzija mozda sam zajebao
-			oy = ( out.y * 30 ) + y;
+			oy = ( out.y * size ) + y;
 			oi = oy * 320 + ox;
 
 			ix = in.x + x;
@@ -464,8 +464,21 @@ void draw_square(POINT out, int color) {
 }
 
 
-//drawing cursor for indicating position
-void draw_cursor(int startX, int startY, int endX, int endY) {
+/*
+    drawing cursor and clearing old cursor value, BATMAN 0 [CLEAR]
+                                                  BATMAN 1 [WRITE]
+*/
+void draw_cursor(int startX, int startY, int endX, int endY, int batman) {
+
+    int RGB;
+
+    if (batman)
+        RGB = 0x38;
+    else
+        if ((X+Y) & 1)
+            RGB = 0x1F5;
+        else
+            RGB = 0x163;
 
 	// gornja ivica
 	for (x = startX; x < endX; x++) {
@@ -473,7 +486,7 @@ void draw_cursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, RGB);
 		}
 	}
 
@@ -483,7 +496,7 @@ void draw_cursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, RGB);
 		}
 	}
 
@@ -493,7 +506,7 @@ void draw_cursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, RGB);
 		}
 	}
 
@@ -503,7 +516,7 @@ void draw_cursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, RGB);
 		}
 	}
 }
@@ -512,7 +525,6 @@ void draw_cursor(int startX, int startY, int endX, int endY) {
 //function that controls switches and buttons
 void move() {
 	int startX = 40, startY = 0, endX = 70, endY = 30;
-	int oldStartX, oldStartY, oldEndX, oldEndY;
 
 	typedef enum { NOTHING_PRESSED, SOMETHING_PRESSED } btn_state_t;
 
@@ -525,37 +537,48 @@ void move() {
 			btn_state = SOMETHING_PRESSED;
 			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & DOWN) == 0) {
 				if (endY < 240) {
-					oldStartY = startY;
-					oldEndY = endY;
+                    draw_cursor(startX, startY, endX, endY, 0);
+
+                    Y++;
+
 					startY += 30;
 					endY += 30;
-					draw_cursor(startX, startY, endX, endY);
+					draw_cursor(startX, startY, endX, endY, 1);
 				}
 			}
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
 				if (endX < 280) {
-					oldStartX = startX;
+                    draw_cursor(startX, startY, endX, endY, 0);
+
+                    X++;
+
 					startX += 30;
 					endX += 30;
-					draw_cursor(startX, startY, endX, endY);
+					draw_cursor(startX, startY, endX, endY, 1);
 				}
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
 				if (startX > 40) {
-					oldStartX = startX;
+                    draw_cursor(startX, startY, endX, endY, 0);
+
+                    X--;
+
 					startX -= 30;
 					endX -= 30;
-					draw_cursor(startX, startY, endX, endY);
+					draw_cursor(startX, startY, endX, endY, 1);
 				}
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & UP) == 0) {
 				if (startY > 0) {
-					oldStartY = startY;
+                    draw_cursor(startX, startY, endX, endY, 0);
+
+                    Y--;
+
 					startY -= 30;
 					endY -= 30;
-					draw_cursor(startX, startY, endX, endY);
+					draw_cursor(startX, startY, endX, endY, 1);
 				}
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER) == 0) {
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW0) != 0)    { //flag
-			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW1) != 0)    { 
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW1) != 0)    {
 			} else { btn_state = NOTHING_PRESSED; }
 		} else { // SOMETHING_PRESSED
 			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & DOWN) == 0) {
