@@ -210,6 +210,7 @@ void draw_board(SQUARE board[][WIDTH]) {
     out.x = out.y = 0;
 
     for (int y = 0; y < WIDTH; y++, out.y++) {
+	out.x = 0;
         for (int x = 0; x < WIDTH; x++, out.x++) {
             if (board[y][x].piece != NULL)  {
 
@@ -218,7 +219,7 @@ void draw_board(SQUARE board[][WIDTH]) {
 
                         in.x = 0;
 
-                        if      ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                        if ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
                             in.y = 0;
                             draw_piece(in, out);
                         }
@@ -239,7 +240,7 @@ void draw_board(SQUARE board[][WIDTH]) {
 
                         in.x = 30;
 
-                        if      ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                        if ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
                             in.y = 0;
                             draw_piece(in, out);
                         }
@@ -260,7 +261,7 @@ void draw_board(SQUARE board[][WIDTH]) {
 
                         in.x = 60;
 
-                        if      ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
+                        if ( board[y][x].color == WHITE && board[y][x].piece->color == WHITE ) {
                             in.y = 0;
                             draw_piece(in, out);
                         }
@@ -360,7 +361,7 @@ void draw_piece(POINT in, POINT out) {
 	for (int y = 0; y < size; y++) {
 		for (int x = 0; x < size; x++) {
 			ox = ( 40 + out.x * size ) + x; // konverzija mozda sam zajebao
-			oy = ( out.y * 30 ) + y;
+			oy = ( out.y * size ) + y;
 			oi = oy * 320 + ox;
 
 			ix = in.x + x;
