@@ -30,6 +30,7 @@ typedef struct square_st {
 
 static int player_turn = WHITE;
 
+
 /* Functions used in game */
 
 void setup_board(SQUARE board[][WIDTH], PIECE black[], PIECE white[]);
@@ -38,6 +39,16 @@ void print_board(SQUARE board[][WIDTH]);
 void draw_board(SQUARE board[][WIDTH]);
 void draw_square(POINT out, int color);
 void draw_piece(POINT in, POINT out);
+
+/* PHASE 2 */
+void move_pawn(POINT pos, int turn);
+void move_rook(POINT pos, int turn);
+void move_knight(POINT pos, int turn);
+void move_bishop(POINT pos, int turn);
+void move_queen(POINT pos, int turn);
+void move_king(POINT pos, int turn);
+
+int eatable(POS pos, int turn);
 
 /*-----------------------------------MAIN--------------------------------------*/
 
@@ -401,5 +412,19 @@ void draw_square(POINT out, int color) {
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
 							+ oi * 4, RGB);
         }
+    }
+}
+
+
+void move_pawn(POINT pos, int turn) {
+
+    POINT playable[4];
+
+
+    if (turn == WHITE) {
+        if (pos.y == 6)
+
+    } else {
+        if (pos.y == 1)
     }
 }
