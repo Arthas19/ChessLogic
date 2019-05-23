@@ -879,4 +879,80 @@ void move_knight(PIECE knight){
 			}
 	}
 	
+	if (knight.point.x == 0 && knight.point.y > 1 && knight.point.y < 6){
+		
+			
+			pos.y = knight.point.y - 2;
+			pos.x = knight.point.x + 1;
+			if (eatable(pos) != -1) {
+				playable[k].x = pos.x;
+				playable[k].y = pos.y;
+				k++;
+				}
+				
+			pos.y = knight.point.y + 2;
+			pos.x = knight.point.x + 1;
+			if (eatable(pos) != -1) {
+				playable[k].x = pos.x;
+				playable[k].y = pos.y;
+				k++;
+				}
+				
+			pos.y = knight.point.y - 1;
+			pos.x = knight.point.x + 2;
+			if (eatable(pos) != -1) {
+				playable[k].x = pos.x;
+				playable[k].y = pos.y;
+				k++;
+				}
+				
+			pos.y = knight.point.y + 1;
+			pos.x = knight.point.x + 2;
+			if (eatable(pos) != -1) {
+				playable[k].x = pos.x;
+				playable[k].y = pos.y;
+				k++;
+				}
+	
+	}
+	
+	
+	if (knight.point.x == 7 && knight.point.y > 1 && knight.point.y < 6){
+		
+			
+			pos.y = knight.point.y - 2;
+			pos.x = knight.point.x - 1;
+			if (eatable(pos) != -1) {
+				playable[k].x = pos.x;
+				playable[k].y = pos.y;
+				k++;
+				}
+				
+			pos.y = knight.point.y + 2;
+			pos.x = knight.point.x - 1;
+			if (eatable(pos) != -1) {
+				playable[k].x = pos.x;
+				playable[k].y = pos.y;
+				k++;
+				}
+				
+			pos.y = knight.point.y - 1;
+			pos.x = knight.point.x - 2;
+			if (eatable(pos) != -1) {
+				playable[k].x = pos.x;
+				playable[k].y = pos.y;
+				k++;
+				}
+				
+			pos.y = knight.point.y + 1;
+			pos.x = knight.point.x - 2;
+			if (eatable(pos) != -1) {
+				playable[k].x = pos.x;
+				playable[k].y = pos.y;
+				k++;
+				}
+	
+	}
+
+}	
 	
